@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
+const profileRoutes = require('./routes/profileRoutes'); // Importando as rotas de perfil
 
 const app = express();
 
@@ -21,7 +22,11 @@ mongoose.connect(uri, {
   console.error('Erro ao conectar ao MongoDB:', err);
 });
 
+// Usando as rotas de usuário
 app.use('/api/users', userRoutes);
+
+// Usando as rotas de perfil
+app.use('/api/profile', profileRoutes); // Rota para o perfil
 
 app.get('/', (req, res) => {
   res.send('Servidor funcionando!');
