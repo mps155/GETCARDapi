@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
-const profileRoutes = require('./routes/profileRoutes'); // Importando as rotas de perfil
+const cardRoutes = require('./routes/cardRoutes');
+const cardUserRoutes = require('./routes/cardUserRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 
 const app = express();
 
@@ -12,7 +14,6 @@ app.use(bodyParser.json());
 
 const uri = "mongodb+srv://admin:mps155@myapi.dpv3ofe.mongodb.net/?retryWrites=true&w=majority&appName=MyAPI";
 
-// Conexão com o MongoDB
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,11 +23,13 @@ mongoose.connect(uri, {
   console.error('Erro ao conectar ao MongoDB:', err);
 });
 
-// Usando as rotas de usuário
 app.use('/api/users', userRoutes);
 
-// Usando as rotas de perfil
-app.use('/api/profile', profileRoutes); // Rota para o perfil
+app.use('/api/profile', profileRoutes);
+
+app.use('/api/card', cardRoutes);
+
+app.use('/api/cardUser', cardUserRoutes);
 
 app.get('/', (req, res) => {
   res.send('Servidor funcionando!');
