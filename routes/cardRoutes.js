@@ -5,6 +5,19 @@ const Card = require("../models/cardModel");
 
 const router = express.Router();
 
+const authenticateToken = (req, res, next) => {
+  const token = req.header("Authorization")?.replace("Bearer ", ""); // Pega o token do header 'Authorization'
+  console.log("valid:", token);
+
+  if (!token) return res.status(401).send("Access Denied");
+
+  jwt.verify(token, "mps155", (err, user) => {
+    if (err) return res.status(403).send("Invalid Token");
+    req.user = user;
+    next();
+  });
+};
+
 router.post("/register", async (req, res) => {
   try {
     const cards = req.body;
@@ -64,24 +77,11 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Rota de login
-router.post("/consult", async (req, res) => {
-  const { email, password } = req.body;
-
-  // Verificar se o usuário existe
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "Usuário não encontrado" });
-
-  // Verificar a senha
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: "Senha incorreta" });
-
-  // Criar o token JWT
-  const token = jwt.sign({ userId: user._id }, "mps155", {
-    expiresIn: "1h",
-  });
-  console.log("login:", token);
-  res.json({ token });
+router.get("/getAllCards", authenticateToken, async (req, res) => {
+  
+  const cardList = await Card.find({});
+  console.log(cardList);
+  res.json({ cardList });
 });
 
 module.exports = router;
