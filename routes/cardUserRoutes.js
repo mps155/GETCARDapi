@@ -8,8 +8,7 @@ const router = express.Router();
 
 const authenticateToken = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", ""); // Pega o token do header 'Authorization'
-  console.log("valid:", token);
-
+  
   if (!token) return res.status(401).send("Access Denied");
 
   jwt.verify(token, "mps155", (err, user) => {
